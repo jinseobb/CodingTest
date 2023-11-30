@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Main {
 
-	
+	// 문자찾기 문
 	public static void main(String[] args) {
 	
 		Main t = new Main();
