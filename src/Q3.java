@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 import java.util.Scanner;
 
+//문장 속에서 가장 긴 단어 찾기 
 public class Q3 {
 
 	public static void main(String[] args) {
