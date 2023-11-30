@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+//대소문자 변환 문제
 public class Q2 {
 
 	public static void main(String[] args) {
