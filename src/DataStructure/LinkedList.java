@@ -2,17 +2,24 @@ package DataStructure;
 
 public class LinkedList {
 
+	Node header;
+	
+	static class Node{
+
 		int data;
-		LinkedList next = null;
+		Node next = null;	
+	}
 	
 	
-	LinkedList(int d){
-		this.data = d;
+	LinkedList(){
+		//this.data = d;
+		header = new Node();
 	}
 
 	void append(int d) {
-		LinkedList end = new LinkedList(d);
-		LinkedList n = this;
+		Node end = new Node();
+		end.data = d;
+		Node n = header;
 		while(n.next != null) {
 			n = n.next;
 		}
@@ -20,7 +27,7 @@ public class LinkedList {
 	}
 	
 	void delete(int d) {
-		LinkedList n = this;
+		Node n = header;
 		while(n.next != null) {
 			if(n.next.data == d) {
 				n.next = n.next.next;
@@ -31,7 +38,7 @@ public class LinkedList {
 	}
 	
 	void retrieve() {
-		LinkedList n = this;
+		Node n = header;
 		while(n.next != null) {
 			System.out.print(n.data + " -> ");
 		 n = n.next;
@@ -40,14 +47,18 @@ public class LinkedList {
 	}
 	
 	public static void main(String[] args) {
-		LinkedList head = new LinkedList(1);
-		LinkedList head2 = new LinkedList(2);
+		//LinkedList head = new LinkedList(1);
+		//LinkedList head2 = new LinkedList(2);
 		/*head.append(2);
 		head.append(3);
 		head.append(4);
 		head.append(5);
 		head.delete(2);*/
-	head.next = head2;
+		LinkedList head = new LinkedList();
+//	    head.append(1);
+//	    head.append(2);
+//	    head.append(3);
+
 		head.retrieve();
 	}
 
