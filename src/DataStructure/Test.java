@@ -5,44 +5,38 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 class Test {
 
-	static int n;
-	static int m;
-	static PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
+ static int n;
+ static PriorityQueue<Integer> pq = new PriorityQueue<Integer>(Collections.reverseOrder());
+ 
+ public static void main(String[] args) throws IOException {
+	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	
-	public static void main(String[] args) throws IOException {
+	StringTokenizer st = new StringTokenizer(br.readLine());
+	
+	n = Integer.parseInt(st.nextToken());
+	
+	for(int i=0; i<n; i++) {
+	  st = new StringTokenizer(br.readLine());
+	  while(st.hasMoreTokens()) {
+			pq.add(Integer.parseInt(st.nextToken()));
+	  }
 		
 		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		n = Integer.parseInt(st.nextToken());
-		m = Integer.parseInt(st.nextToken());
-		int[][] arg = new int[n][m];
-		
-		
-		for(int i=0; i<n; i++) {
-			st = new StringTokenizer(br.readLine());
-			for(int j=0; j<m; j++) {
-				arg[i][j] = Integer.parseInt(st.nextToken());
-			}
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		for(int i=0; i<n; i++) {
-			st = new StringTokenizer(br.readLine());
-			for(int j=0; j<m; j++) {
-				sb.append(arg[i][j] + Integer.parseInt(st.nextToken())).append(" ");
-			}
-			sb.append("\n");
-			
-		}
-		
-		System.out.println(sb);
-	}//main
+	}
+	
+	
+	for(int i=1; i<n; i++) {
+		pq.remove();
+	}
+	
+	System.out.println(pq.peek());
+}
 
 	
 	
