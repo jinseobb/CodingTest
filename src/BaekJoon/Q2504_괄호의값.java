@@ -16,42 +16,40 @@ public class Q2504_괄호의값 {
 		boolean check = true;
 		long count = 0;
 		long value = 1;
-		for (int i=0; i<tmp.length(); i++) {
+		for(int i=0; i<tmp.length(); i++) {
 			char c = tmp.charAt(i);
-			if(c == '(' ) {
+			if(c == '(') {
 				stack.push(c);
 				value *= 2;
-			}else if(c == '[') {
+			}else if ( c =='[') {
 				stack.push(c);
 				value *= 3;
-			}else if( c== ')') {
+			}else if ( c == ')') {
 				if(stack.isEmpty() || stack.peek() != '(') {
 					check = false;
 					break;
 				}else if (tmp.charAt(i-1) == '(') {
-					count += value;
+						count += value;
 				}
-				
-				
 				stack.pop();
 				value /= 2;
-			}else if ( c== ']') {
+				
+				
+			}else if ( c ==']') {
 				if(stack.isEmpty() || stack.peek() != '[') {
 					check = false;
 					break;
-				}else if (tmp.charAt(i-1) == '[') {
-					count += value;
+				}else if(tmp.charAt(i-1) == '['){
+						count += value;
 				}
-				
 				stack.pop();
 				value /= 3;
 			}
-			
-			
 		
-	} 
-	
-		if(check) {
+		}
+		
+			
+		if(stack.isEmpty() && check) {
 			System.out.println(count);
 		}else {
 			System.out.println(0);
