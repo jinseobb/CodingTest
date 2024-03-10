@@ -3,79 +3,207 @@ package BaekJoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import BaekJoon.Q15683_감시.Pair;
+
 public class Practice {
-	static int[] dx = {1,0,-1,0,0,0};
-	static int[] dy = {0,1,0,-1,0,0};
-	static int[] dz = {0,0,0,0,1,-1};
-	static int n,m,h,count,finalcount= 0;
-	static Queue<Pair> q = new LinkedList<>();
-	static int[][][] arr;
-	static boolean[][][] visited;
+	static int n,m;
 	static class Pair{
 		private int x;
 		private int y;
-		private int z;
-		private int day;
-		public Pair(int x, int y, int z , int day) {
-			this.x = x;
-			this.y = y;
-			this.z = z;
-			this.day = day;
-		}
+		private int cctvnum;
+		 
+		 public Pair(int x, int y, int cctvnum) {
+			 this.x = x;
+			 this.y = y;
+			 this.cctvnum = cctvnum;
+		 }
 	}
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		m = Integer.parseInt(st.nextToken());
-		n = Integer.parseInt(st.nextToken());
-		h = Integer.parseInt(st.nextToken());
-		arr= new int[h][n][m];
-		visited = new boolean [h][n][m];
-		for(int i=0; i<h; i++) {
-			for(int j=0;j<n;j++) {
-				st = new StringTokenizer(br.readLine());
-				for(int k=0; k<m; k++) {
-					arr[i][j][k] = Integer.parseInt(st.nextToken());
-					if(arr[i][j][k]==0) {
-						count++;
-					}
-					if(arr[i][j][k] == 1) {
-						q.offer(new Pair(j,k,i,0));
-						visited[i][j][k] = true;
-					}
+	static int[][] arr;
+	static ArrayList<Pair> cctv = new ArrayList<>();
+	static int min = Integer.MAX_VALUE;
+	static StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        arr = new int[n][m];
+        for(int i=0; i<n; i++) {
+        	st = new StringTokenizer(br.readLine());
+        	for(int j=0; j<m; j++) {
+        		
+        		int a = Integer.parseInt(st.nextToken());
+        		arr[i][j] = a;
+        		if(a !=0 && a != 6 ) {
+        			cctv.add(new Pair(i,j,arr[i][j]));
+        		}
+        	}
+        }
+        BT(0,arr,cctv);
+        System.out.println(min);
+    }
+    private static void BT(int depth, int[][] arr2, ArrayList<Pair> cctv2) {
+		if(depth == cctv2.size()) {
+			min = Math.min(min, getCount(arr2));
+			return;
+		}
+		int cctvNum = cctv.get(depth).cctvnum;
+		int x = cctv.get(depth).x;
+		int y = cctv.get(depth).y;
+		int[][] tmp;
+		if(cctvNum == 1) {
+			tmp = copy(arr2);
+			checkLeft(tmp,x,y);
+			BT(depth+1,tmp,cctv);
+			
+			tmp = copy(arr2);
+			checkRight(tmp,x,y);
+			BT(depth+1,tmp,cctv);
+			
+			tmp = copy(arr2);
+			checkUp(tmp,x,y);
+			BT(depth+1,tmp,cctv);
+			
+			tmp = copy(arr2);
+			checkDown(tmp,x,y);
+			BT(depth+1,tmp,cctv);
+		}else if(cctvNum ==2 ) {
+			tmp = copy(arr2);
+			checkLeft(tmp,x,y);
+			checkRight(tmp,x,y);
+			BT(depth+1,tmp,cctv);
+			
+			tmp = copy(arr2);
+			checkUp(tmp,x,y);
+			checkDown(tmp,x,y);
+			BT(depth+1,tmp,cctv);
+		}else if(cctvNum ==3 ) {
+			tmp = copy(arr2);
+			checkUp(tmp,x,y);
+			checkRight(tmp,x,y);
+			BT(depth+1,tmp,cctv);
+			
+			tmp = copy(arr2);
+			checkRight(tmp,x,y);
+			checkDown(tmp,x,y);
+			BT(depth+1,tmp,cctv);
+			
+			tmp = copy(arr2);
+			checkDown(tmp,x,y);
+			checkLeft(tmp,x,y);
+			BT(depth+1,tmp,cctv);
+			
+			tmp = copy(arr2);
+			checkLeft(tmp,x,y);
+			checkUp(tmp,x,y);
+			BT(depth+1,tmp,cctv);
+			
+		}else if(cctvNum ==4 ) {
+			tmp = copy(arr2);
+            checkLeft(tmp, x, y);
+            checkUp(tmp, x, y);
+            checkRight(tmp, x, y);
+            BT(depth+1, tmp, cctv);
+
+            tmp = copy(arr2);
+            checkUp(tmp, x, y);
+            checkRight(tmp, x, y);
+            checkDown(tmp, x, y);
+            BT(depth+1, tmp, cctv);
+
+            tmp = copy(arr2);
+            checkRight(tmp, x, y);
+            checkDown(tmp, x, y);
+            checkLeft(tmp ,x , y);
+            BT(depth+1, tmp, cctv);
+
+            tmp = copy(arr2);
+            checkDown(tmp, x, y);
+            checkLeft(tmp ,x , y);
+            checkUp(tmp, x, y);
+            BT(depth+1, tmp, cctv);
+		}else if(cctvNum ==5 ) {
+			tmp = copy(arr2);
+			checkRight(tmp,x,y);
+            checkDown(tmp, x, y);
+            checkLeft(tmp ,x , y);
+            checkUp(tmp, x, y);
+            BT(depth+1, tmp, cctv);
+		}
+		
+	}
+	private static int getCount(int[][] arr3) {
+		int  count = 0;
+		for(int i=0; i<n; i++) {
+			for(int j=0; j<m; j++) {
+				if(arr3[i][j] == 0) {
+					count++;
 				}
 			}
 		}
-		
-		//bfs
-		while(!q.isEmpty()) {
-			Pair p = q.poll();
-			for(int i=0; i<6; i++) {
-				int nx = p.x+dx[i];
-				int ny = p.y+dy[i];
-				int nz = p.z+dz[i];
-				if(nx < 0 || ny < 0 || nz < 0 || nx >=n || ny >=m || nz>=h){
-					continue;
-				}
-				if(!visited[nz][nx][ny] && arr[nz][nx][ny] == 0) {
-					q.offer(new Pair(nx,ny,nz,p.day+1));
-					visited[nz][nx][ny] = true;
-					finalcount = p.day+1;
-					count--;
-							
-				}
+	
+		return count;
+	}
+	private static void checkUp(int[][] tmp, int x, int y) {
+		for(int i=x-1; i>=0; i--) {
+			if(tmp[i][y] == 6) {
+				return;
 			}
-		}
-		
-		if(count ==0) {
-			System.out.println(count);
-		}else {
-			System.out.println(-1);
+			if(tmp[i][y] != 0) {
+				continue;
+			}
+			tmp[i][y] = -1;
 		}
 		
 	}
+	private static void checkLeft(int[][] tmp, int x, int y) {
+
+		for(int i=y-1; i>=0; i--) {
+			if(tmp[x][i] == 6) {
+				return;
+			}
+			if(tmp[x][i] != 0) {
+				continue;
+			}
+			tmp[x][i] = -1;
+		}
+	}
+	private static void checkDown(int[][] tmp, int x, int y) {
+
+		for(int i=x+1; i<n; i++) {
+			if(tmp[i][y] == 6) {
+				return;
+			}
+			if(tmp[i][y] != 0) {
+				continue;
+			}
+			tmp[i][y] = -1;
+		}
+	}
+	private static void checkRight(int[][] tmp, int x, int y) {
+
+		for(int i=y+1; i<m; i++) {
+			if(tmp[x][i] == 6) {
+				return;
+			}
+			if(tmp[x][i] != 0) {
+				continue;
+			}
+			tmp[x][i] = -1;
+		}
+	}
+	private static int[][] copy(int[][] arr3) {
+		int[][] ttt = new int[n][m];
+		for(int i=0; i<n; i++) {
+			for(int j=0; j<m;j++) {
+				ttt[i][j] = arr3[i][j];
+			}
+		}
+		return ttt;
+	}
+	
+
 }	
