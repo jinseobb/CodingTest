@@ -9,201 +9,85 @@ import java.util.StringTokenizer;
 import BaekJoon.Q15683_감시.Pair;
 
 public class Practice {
-	static int n,m;
-	static class Pair{
-		private int x;
-		private int y;
-		private int cctvnum;
-		 
-		 public Pair(int x, int y, int cctvnum) {
-			 this.x = x;
-			 this.y = y;
-			 this.cctvnum = cctvnum;
-		 }
-	}
-	static int[][] arr;
-	static ArrayList<Pair> cctv = new ArrayList<>();
-	static int min = Integer.MAX_VALUE;
+	static int n,m,count,r,c,result;
+	static int[][] notebook, sticker;
+	
 	static StringBuilder sb = new StringBuilder();
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
-        arr = new int[n][m];
-        for(int i=0; i<n; i++) {
+        count = Integer.parseInt(st.nextToken());
+        notebook = new int[n][m];
+        for(int i=0; i<count;i++) {
         	st = new StringTokenizer(br.readLine());
-        	for(int j=0; j<m; j++) {
-        		
-        		int a = Integer.parseInt(st.nextToken());
-        		arr[i][j] = a;
-        		if(a !=0 && a != 6 ) {
-        			cctv.add(new Pair(i,j,arr[i][j]));
+        	 r = Integer.parseInt(st.nextToken());
+        	c = Integer.parseInt(st.nextToken());
+        	sticker = new int[r][c];
+        	for(int j=0; j<r; j++) {
+        		st = new StringTokenizer(br.readLine());
+        		for(int k=0; k<c; k++) {
+        			sticker[j][k] = Integer.parseInt(st.nextToken());
         		}
         	}
+        	//4방향 
+        	for(int rotate = 0; rotate<4; rotate++) {
+        		
+        		if(attach(sticker)) {
+        			break;
+        		}
+        		sticker = rotate(sticker);
+        	}
+        
         }
-        BT(0,arr,cctv);
-        System.out.println(min);
+        System.out.println(result);
     }
-    private static void BT(int depth, int[][] arr2, ArrayList<Pair> cctv2) {
-		if(depth == cctv2.size()) {
-			min = Math.min(min, getCount(arr2));
-			return;
+	private static int[][] rotate(int[][] sticker2) {
+		int r = sticker2.length;
+		int c = sticker2[0].length;
+		int[][] newsticker = new int[c][r];
+		for(int i=0; i<r; i++) {
+			for(int j=0; j<c;j++) {
+				newsticker[j][r-1-i]=sticker2[i][j];
+			}
 		}
-		int cctvNum = cctv.get(depth).cctvnum;
-		int x = cctv.get(depth).x;
-		int y = cctv.get(depth).y;
-		int[][] tmp;
-		if(cctvNum == 1) {
-			tmp = copy(arr2);
-			checkLeft(tmp,x,y);
-			BT(depth+1,tmp,cctv);
-			
-			tmp = copy(arr2);
-			checkRight(tmp,x,y);
-			BT(depth+1,tmp,cctv);
-			
-			tmp = copy(arr2);
-			checkUp(tmp,x,y);
-			BT(depth+1,tmp,cctv);
-			
-			tmp = copy(arr2);
-			checkDown(tmp,x,y);
-			BT(depth+1,tmp,cctv);
-		}else if(cctvNum ==2 ) {
-			tmp = copy(arr2);
-			checkLeft(tmp,x,y);
-			checkRight(tmp,x,y);
-			BT(depth+1,tmp,cctv);
-			
-			tmp = copy(arr2);
-			checkUp(tmp,x,y);
-			checkDown(tmp,x,y);
-			BT(depth+1,tmp,cctv);
-		}else if(cctvNum ==3 ) {
-			tmp = copy(arr2);
-			checkUp(tmp,x,y);
-			checkRight(tmp,x,y);
-			BT(depth+1,tmp,cctv);
-			
-			tmp = copy(arr2);
-			checkRight(tmp,x,y);
-			checkDown(tmp,x,y);
-			BT(depth+1,tmp,cctv);
-			
-			tmp = copy(arr2);
-			checkDown(tmp,x,y);
-			checkLeft(tmp,x,y);
-			BT(depth+1,tmp,cctv);
-			
-			tmp = copy(arr2);
-			checkLeft(tmp,x,y);
-			checkUp(tmp,x,y);
-			BT(depth+1,tmp,cctv);
-			
-		}else if(cctvNum ==4 ) {
-			tmp = copy(arr2);
-            checkLeft(tmp, x, y);
-            checkUp(tmp, x, y);
-            checkRight(tmp, x, y);
-            BT(depth+1, tmp, cctv);
-
-            tmp = copy(arr2);
-            checkUp(tmp, x, y);
-            checkRight(tmp, x, y);
-            checkDown(tmp, x, y);
-            BT(depth+1, tmp, cctv);
-
-            tmp = copy(arr2);
-            checkRight(tmp, x, y);
-            checkDown(tmp, x, y);
-            checkLeft(tmp ,x , y);
-            BT(depth+1, tmp, cctv);
-
-            tmp = copy(arr2);
-            checkDown(tmp, x, y);
-            checkLeft(tmp ,x , y);
-            checkUp(tmp, x, y);
-            BT(depth+1, tmp, cctv);
-		}else if(cctvNum ==5 ) {
-			tmp = copy(arr2);
-			checkRight(tmp,x,y);
-            checkDown(tmp, x, y);
-            checkLeft(tmp ,x , y);
-            checkUp(tmp, x, y);
-            BT(depth+1, tmp, cctv);
-		}
-		
+		return newsticker;
 	}
-	private static int getCount(int[][] arr3) {
-		int  count = 0;
-		for(int i=0; i<n; i++) {
-			for(int j=0; j<m; j++) {
-				if(arr3[i][j] == 0) {
-					count++;
+	private static boolean attach(int[][] sticker2) {
+		for(int i=0; i<n-sticker2.length+1;i++) {
+			for(int j=0; j<m-sticker2[0].length+1;j++) {
+				if(check(sticker2,i,j)) {
+					attachOne(sticker2,i,j);
+					return true;
 				}
 			}
 		}
-	
-		return count;
-	}
-	private static void checkUp(int[][] tmp, int x, int y) {
-		for(int i=x-1; i>=0; i--) {
-			if(tmp[i][y] == 6) {
-				return;
-			}
-			if(tmp[i][y] != 0) {
-				continue;
-			}
-			tmp[i][y] = -1;
-		}
 		
+		return false;
 	}
-	private static void checkLeft(int[][] tmp, int x, int y) {
+	private static void attachOne(int[][] sticker2, int row, int col) {
 
-		for(int i=y-1; i>=0; i--) {
-			if(tmp[x][i] == 6) {
-				return;
-			}
-			if(tmp[x][i] != 0) {
-				continue;
-			}
-			tmp[x][i] = -1;
-		}
-	}
-	private static void checkDown(int[][] tmp, int x, int y) {
-
-		for(int i=x+1; i<n; i++) {
-			if(tmp[i][y] == 6) {
-				return;
-			}
-			if(tmp[i][y] != 0) {
-				continue;
-			}
-			tmp[i][y] = -1;
-		}
-	}
-	private static void checkRight(int[][] tmp, int x, int y) {
-
-		for(int i=y+1; i<m; i++) {
-			if(tmp[x][i] == 6) {
-				return;
-			}
-			if(tmp[x][i] != 0) {
-				continue;
-			}
-			tmp[x][i] = -1;
-		}
-	}
-	private static int[][] copy(int[][] arr3) {
-		int[][] ttt = new int[n][m];
-		for(int i=0; i<n; i++) {
-			for(int j=0; j<m;j++) {
-				ttt[i][j] = arr3[i][j];
+		for(int i=0; i<sticker2.length;i++) {
+			for(int j=0; j<sticker2[0].length;j++) {
+				if(sticker2[i][j] == 1) {
+					notebook[row+i][col+j] = sticker2[i][j];
+					result++;
+				}
 			}
 		}
-		return ttt;
 	}
+	private static boolean check(int[][] sticker2, int row, int col) {
+		for(int i=0; i<sticker2.length;i++) {
+			for(int j=0; j<sticker2[0].length;j++) {
+				if(sticker2[i][j] == 1 && notebook[row+i][col+j] == 1) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+    
 	
 
 }	
